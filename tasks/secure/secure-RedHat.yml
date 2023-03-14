@@ -47,10 +47,11 @@
     state: present
 
 # Configuring a firewall with `firewalld` on RHEL.
-- name: Ensure firewalld is running.
+- name: Ensure firewalld is running and enabled.
   service:
     name: firewalld
     state: started
+    enabled: true
 
 # - name: Amazon Linux 2 fix (use python2)
 #   include_vars:
