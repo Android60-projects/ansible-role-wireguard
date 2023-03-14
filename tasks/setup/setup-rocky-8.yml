@@ -20,11 +20,16 @@
         state: absent
 
     - name: (Rocky Linux 8) Install WireGuard packages
+      notify: reboot system
       ansible.builtin.yum:
         name:
           - "kmod-wireguard"
           - "wireguard-tools"
         state: present
+
+    - name: Reboot is needed to load kernel modules
+      tags: notest
+      meta: flush_handlers
 
 - name: (Rocky Linux 8) Tasks for non-standard kernel
   when:
