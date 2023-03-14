@@ -1,0 +1,77 @@
+---
+- name: Converge
+  hosts: all
+
+  tasks:
+    # - name: Create /var/run/sshd (Debian)
+    #   when: ansible_os_family == 'Debian'
+    #   file:
+    #     path: /var/run/sshd
+    #     state: directory
+    #     owner: root
+    #     group: root
+    #     mode: '0751'
+
+    - name: Create kernel modules directory (Debian)
+      when: ansible_os_family == 'Debian'
+      file:
+        path: /lib/modules
+        state: directory
+        mode: '0751'
+
+    - name: Create a symbolic link
+      file:
+        src: "/host/lib/modules/{{ ansible_kernel }}"
+        dest: "/lib/modules/{{ ansible_kernel }}"
+        owner: root
+        group: root
+        state: link
+
+    - name: Install openssh-server (on RedHat).
+      package:
+        name: openssh-server
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Install selinux-policy (on RedHat).
+      package:
+        name: selinux-policy
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Install required packages (on Debian).
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+        name:
+          - openssh-server
+          - rsyslog
+          - ufw
+          - kmod
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Add af_key module for ipsec.service (Debian)
+      when: ansible_os_family == 'Debian'
+      community.general.modprobe:
+        name: af_key
+        state: present
+
+    - name: Create /var/run/sshd
+      when: ansible_os_family == 'Debian'
+      ansible.builtin.file:
+        path: /var/run/sshd
+        state: directory
+
+    - name: Create /var/log/auth.log
+      when: ansible_os_family == 'Debian'
+      tags: molecule-idempotence-notest
+      ansible.builtin.file:
+        path: /var/log/auth.log
+        state: touch
+
+    - name: Generate SSH keys
+      tags: molecule-idempotence-notest
+      command: ssh-keygen -A
+
+- import_playbook: ../../main.yml

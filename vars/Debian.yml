@@ -1,0 +1,9 @@
+---
+openvpn_server_user: "nobody"
+openvpn_server_group: "nogroup"
+wireguard_postup:
+  - iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+  - ufw route allow in on {{ wireguard_interface }} out on {{ ansible_default_ipv4.interface }}
+wireguard_postdown:
+  - iptables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+  - ufw route delete allow in on {{ wireguard_interface }} out on {{ ansible_default_ipv4.interface }}
