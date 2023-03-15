@@ -28,7 +28,6 @@
         state: present
 
     - name: Reboot is needed to load kernel modules
-      tags: notest
       meta: flush_handlers
 
 - name: (Rocky Linux 8) Tasks for non-standard kernel

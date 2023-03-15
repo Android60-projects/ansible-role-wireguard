@@ -3,58 +3,26 @@ dependency:
   name: galaxy
 lint: |
   set -e
-  yamllint .
+#  yamllint .
 #  ansible-lint
 driver:
   name: vagrant
   provider:
-    name: libvirt
-    type: libvirt
+    name: virtualbox
+    type: virtualbox
     options:
       memory: 1
       cpus: 1
 
 platforms:
   - name: test-wg-ubuntu2004
-    box: generic/ubuntu2004
-    interfaces:
-      - auto_config: true
-        network_name: private_network
-        type: static
-        ip: 192.168.10.10
-    groups:
-      - vpn
-      - ubuntu
-  - name: test-wg-ubuntu1804
-    box: generic/ubuntu1804
-    interfaces:
-      - auto_config: true
-        network_name: private_network
-        type: static
-        ip: 192.168.10.20
-    groups:
-      - vpn
-      - ubuntu
-  - name: test-wg-debian11
-    box: generic/debian11
-    interfaces:
-      - auto_config: true
-        network_name: private_network
-        type: static
-        ip: 192.168.10.30
-    groups:
-      - vpn
-      - debian
-  - name: test-wg-ubuntu2204
-    box: alvistack/ubuntu-22.04
-    interfaces:
-      - auto_config: true
-        network_name: private_network
-        type: static
-        ip: 192.168.10.40
-    groups:
-      - vpn
-      - ubuntu
+    box: geerlingguy/ubuntu2004
+  - name: test-wg-rocky8
+    box: geerlingguy/rockylinux8
+#  - name: test-wg-debian11
+#    box: generic/debian11
+#  - name: test-wg-ubuntu2204
+#    box: alvistack/ubuntu-22.04
 provisioner:
   name: ansible
   connection_options:

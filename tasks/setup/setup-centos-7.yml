@@ -43,7 +43,9 @@
         update_cache: true
 
     - name: (CentOS 7) Enable CentosPlus repo
-      ansible.builtin.command: yum-config-manager --setopt=centosplus.includepkgs=kernel-plus --enablerepo=centosplus --save
+      ansible.builtin.command: yum-config-manager
+       --setopt=centosplus.includepkgs=kernel-plus
+       --enablerepo=centosplus --save
       changed_when: false
 
     - name: (CentOS 7) Update to kernel-plus
