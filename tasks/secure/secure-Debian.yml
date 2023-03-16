@@ -18,6 +18,11 @@
     upgrade: true
     cache_valid_time: 86400
 
+- name: Ensure UFW is insalled.
+  apt:
+    name: ufw
+    state: present
+
 # User account configuration.
 - name: Add a deployment user.
   user:
@@ -61,11 +66,6 @@
 - name: Install fail2ban (Debian).
   apt:
     name: fail2ban
-    state: present
-
-- name: Install jq (Debian).
-  apt:
-    name: jq
     state: present
 
 - name: Ensure fail2ban is running and enabled on boot.
