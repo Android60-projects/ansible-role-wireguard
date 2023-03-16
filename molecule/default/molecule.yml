@@ -16,14 +16,18 @@ platforms:
     box: geerlingguy/ubuntu2004
     memory: 1024
     cpus: 1
+  - name: test-wg-debian11
+    box: geerlingguy/debian11
+    memory: 1024
+    cpus: 1
   - name: test-wg-rocky8
     box: geerlingguy/rockylinux8
     memory: 1024
     cpus: 1
-#  - name: test-wg-debian11
-#    box: generic/debian11
-#  - name: test-wg-ubuntu2204
-#    box: alvistack/ubuntu-22.04
+  - name: test-wg-centos7
+    box: geerlingguy/centos7
+    memory: 1024
+    cpus: 1
 provisioner:
   name: ansible
   connection_options:
