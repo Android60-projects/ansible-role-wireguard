@@ -11,18 +11,12 @@
       line: "PasswordAuthentication no"
   notify: restart ssh
 
-- name: Install extra kernel modules.
+- name: Update and upgrade apt packages.
   tags: notest
   apt:
-    name: linux-generic
     update_cache: true
-    state: present
-
-# - name: Update and upgrade apt packages.
-#   apt:
-#     update_cache: true
-#     upgrade: true
-#     cache_valid_time: 86400
+    upgrade: true
+    cache_valid_time: 86400
 
 # User account configuration.
 - name: Add a deployment user.
