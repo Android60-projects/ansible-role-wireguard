@@ -18,11 +18,11 @@
     update_cache: true
     state: present
 
-- name: Update and upgrade apt packages.
-  apt:
-    update_cache: true
-    upgrade: true
-    cache_valid_time: 86400
+# - name: Update and upgrade apt packages.
+#   apt:
+#     update_cache: true
+#     upgrade: true
+#     cache_valid_time: 86400
 
 # User account configuration.
 - name: Add a deployment user.
