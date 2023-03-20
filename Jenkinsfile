@@ -16,7 +16,7 @@ pipeline {
             agent { label 'molecule-virtualbox' }
             steps {
                 script {
-                    sh "molecule test"
+                    sh "VAGRANT_DEFAULT_PROVIDER=virtualbox molecule test"
                 }
             }
 
