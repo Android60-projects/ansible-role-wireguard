@@ -27,3 +27,19 @@
     - not ansible_os_family == 'Darwin'
     - wireguard_service_enabled == "yes"
   listen: "reconfigure wireguard"
+
+- name: reboot system
+  reboot:
+    msg: "Reboot initiated by Ansible to load new kernel modules"
+
+- name: restart ssh
+  service: name=sshd state=restarted
+
+- name: restart fail2ban
+  service: name=fail2ban state=restarted
+
+- name: reload ufw
+  service: name=ufw state=restarted
+
+- name: restart firewalld
+  command: firewall-cmd --reload
