@@ -2,8 +2,8 @@
 - name: Verify
   hosts: all
   vars_files:
-    - ../../roles/android06.wireguard/vars/main.yml
-    - ../../roles/android06.wireguard/defaults/main.yml
+    - ../../roles/role.android06.wireguard/vars/main.yml
+    - ../../roles/role.android06.wireguard/defaults/main.yml
   tasks:
     - name: Verify that ipsec is running
       systemd:
