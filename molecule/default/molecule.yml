@@ -30,12 +30,12 @@ platforms:
     cpus: 1
     instance_raw_config_args:
       - "vm.boot_timeout = 600"
-  - name: test-wg-rocky8
-    box: geerlingguy/rockylinux8
-    memory: 1024
-    cpus: 1
-    instance_raw_config_args:
-      - "vm.boot_timeout = 600"
+  # - name: test-wg-rocky8
+  #   box: geerlingguy/rockylinux8
+  #   memory: 1024
+  #   cpus: 1
+  #   instance_raw_config_args:
+  #     - "vm.boot_timeout = 600"
 provisioner:
   name: ansible
   connection_options:
