@@ -10,8 +10,8 @@ driver:
   provider:
     name: virtualbox
     type: virtualbox
-    parallel: true
-    provision: yes
+  parallel: true
+  provision: yes
 platforms:
   - name: test-wg-ubuntu2004
     box: geerlingguy/ubuntu2004
