@@ -109,7 +109,7 @@ wireguard_centos7_kernel_plus_reboot_timeout: "600"
 wireguard_rockylinux8_installation_method: "standard"
 
 ################
-wireguard_address: 10.8.0.1/24
+wireguard_address: 10.16.0.1/24
 wireguard_save_config: "true"
 wireguard_postup:
   - iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
