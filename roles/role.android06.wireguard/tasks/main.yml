@@ -6,12 +6,6 @@
 
 - import_tasks: tasks/routing/public-ip.yml
 
-- import_tasks: tasks/secure/secure-Debian.yml
-  when: ansible_os_family == 'Debian'
-
-- import_tasks: tasks/secure/secure-RedHat.yml
-  when: ansible_os_family == 'RedHat'
-
 - import_tasks: tasks/routing/routing-Debian.yml
   when: ansible_os_family == 'Debian'
 

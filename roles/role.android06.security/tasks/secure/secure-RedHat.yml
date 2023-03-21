@@ -11,11 +11,13 @@
       line: "PasswordAuthentication no"
   notify: restart ssh
 
-# - name: Upgrade all packages
-#   dnf:
-#     name: '*'
-#     state: latest
-#     nobest: true
+- name: Upgrade all packages
+  tags: notest
+  when: upgrade_packages == true
+  dnf:
+    name: '*'
+    state: latest
+    nobest: true
 
 # Remove unused software, open only required ports.
 - name: Remove unused packages.
@@ -39,11 +41,9 @@
     state: started
     enabled: true
 
-- name: Install required packages
+- name: Install firewalld
   dnf:
-    name:
-      - firewalld
-      - tar
+    name: firewalld
     state: present
 
 # Configuring a firewall with `firewalld` on RHEL.
@@ -53,10 +53,15 @@
     state: started
     enabled: true
 
-# - name: Amazon Linux 2 fix (use python2)
-#   include_vars:
-#     file: vars/AL2.yml
-#   when: ansible_distribution == "Amazon"
+- name: Open SSH port
+  notify:
+    - restart firewalld
+  firewalld:
+    state: "enabled"
+    port: "22/tcp"
+    zone: "public"
+    immediate: true
+    permanent: true
 
 - name: Install fail2ban (RedHat).
   dnf:
@@ -95,7 +100,23 @@
     state: present
 
 - name: Ensure SELinux is enabled in `targeted` mode.
-  tags: notest
   selinux:
     policy: targeted
     state: enforcing
+
+- name: Count sshd jails
+  ansible.builtin.shell: |
+    set -o errexit
+    set -o pipefail
+    set -o nounset
+    fail2ban-client status | grep "sshd" | wc -l
+    exit 0
+  args:
+    executable: "/bin/bash"
+  register: sshd_jail_count
+  changed_when: false
+
+- name: There should be at least one sshd jail
+  ansible.builtin.assert:
+    that:
+      - "sshd_jail_count.stdout|int > 0"
