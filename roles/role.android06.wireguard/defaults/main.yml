@@ -121,6 +121,7 @@ wgui_enabled: false
 wgui_admin_user: admin
 wgui_admin_password: pass
 wgui_path: /opt/wireguard-ui
+wgui_mtu: 1400
 
 #User for wireguard ui service
 wireguard_ui_user: wgui-admin

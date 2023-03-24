@@ -9,6 +9,7 @@ After=network.target
 Environment=WGUI_USERNAME={{ wgui_admin_user }}
 Environment=WGUI_PASSWORD={{ wgui_admin_password }}
 Environment=WGUI_ENDPOINT_ADDRESS={{ public_ip }}
+Environment=WGUI_MTU={{ wgui_mtu }}
 {% if wireguard_postup is defined %}
 Environment="WGUI_SERVER_POST_UP_SCRIPT={% for wg_postup in wireguard_postup %}{{ wg_postup }};{% endfor %}"
 {% endif %}
