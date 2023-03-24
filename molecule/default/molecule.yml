@@ -3,7 +3,7 @@ dependency:
   name: galaxy
 lint: |
   set -e
-#  yamllint .
+  yamllint .
 #  ansible-lint
 driver:
   name: vagrant
