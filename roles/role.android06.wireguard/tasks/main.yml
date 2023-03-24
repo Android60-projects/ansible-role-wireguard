@@ -13,3 +13,6 @@
   when: ansible_os_family == 'RedHat'
 
 - import_tasks: tasks/setup/setup-main.yml
+
+- import_tasks: tasks/setup/setup-wgui.yml
+  when: wgui_enabled == true

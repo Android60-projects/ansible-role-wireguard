@@ -33,13 +33,25 @@
     msg: "Reboot initiated by Ansible to load new kernel modules"
 
 - name: restart ssh
-  service: name=sshd state=restarted
+  service: name=sshd state=restarted enabled=yes
 
 - name: restart fail2ban
-  service: name=fail2ban state=restarted
+  service: name=fail2ban state=restarted enabled=yes
 
 - name: reload ufw
-  service: name=ufw state=restarted
+  service: name=ufw state=restarted enabled=yes
 
 - name: restart firewalld
   command: firewall-cmd --reload
+
+- name: restart wgui
+  service: name=wgui state=restarted enabled=yes daemon_reload=true
+
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes
+
+- name: restart wgui-restart.service
+  service: name=wgui-restart.service state=restarted daemon_reload=true
+
+- name: restart wgui-restart.path
+  service: name=wgui-restart.path state=restarted enabled=yes daemon_reload=true

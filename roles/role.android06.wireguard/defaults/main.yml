@@ -115,3 +115,12 @@ wireguard_postup:
   - iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
 wireguard_postdown:
   - iptables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+
+################ Wireguard UI options
+wgui_enabled: false
+wgui_admin_user: admin
+wgui_admin_password: pass
+wgui_path: /opt/wireguard-ui
+
+#User for wireguard ui service
+wireguard_ui_user: wgui-admin

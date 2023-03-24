@@ -149,6 +149,7 @@
     - wg-config
 
 - name: Generate WireGuard configuration file
+  when: wgui_enabled == false
   ansible.builtin.template:
     src: wg.conf.j2
     dest: "{{ wireguard_remote_directory }}/{{ wireguard_interface }}.conf"
@@ -173,4 +174,4 @@
     name: "wg-quick@{{ wireguard_interface }}"
     state: "{{ wireguard_service_state }}"
     enabled: "{{ wireguard_service_enabled }}"
-  when: not ansible_os_family == 'Darwin'
+  when: (not ansible_os_family == 'Darwin') and (wgui_enabled == false)
