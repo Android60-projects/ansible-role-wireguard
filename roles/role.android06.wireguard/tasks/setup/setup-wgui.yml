@@ -70,11 +70,18 @@
     persistent: true
   when: ansible_selinux.status == 'enabled'
 
+- name: delete default nginx site
+  when: ansible_os_family == 'Debian'
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
 - name: Place nginx site config (Debian)
   when: ansible_os_family == 'Debian'
   ansible.builtin.template:
     src: nginx-site.j2
-    dest: "/etc/nginx/sites-available/default"
+    dest: "/etc/nginx/sites-enabled/{{ wgui_server_name }}"
   notify:
     - restart nginx
 
