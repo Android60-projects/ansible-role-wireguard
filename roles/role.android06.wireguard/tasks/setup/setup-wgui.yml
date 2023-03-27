@@ -10,7 +10,8 @@
     name: nginx
     state: present
 
-- name: Open ports for nginx
+- name: Open ports for nginx (Debian)
+  when: ansible_os_family == 'Debian'
   ufw:
     rule: allow
     direction: in
@@ -23,6 +24,20 @@
     - {port: '80', proto: 'tcp'}
     - {port: '443', proto: 'tcp'}
   notify: reload ufw
+
+- name: Open ports for nginx (RHEL)
+  when: ansible_os_family == 'RedHat'
+  notify:
+    - restart firewalld
+  firewalld:
+    state: "{{ item.state }}"
+    port: "{{ item.port }}"
+    zone: "{{ firewalld_default_interface_zone }}"
+    immediate: true
+    permanent: true
+  with_items:
+    - {state: 'enabled', port: '80/tcp'}
+    - {state: 'enabled', port: '443/tcp'}
 
 # Wireguard UI user account configuration.
 - name: Add a wireguard-ui user.
@@ -88,8 +103,8 @@
 - name: Place nginx site config (RedHat)
   when: ansible_os_family == 'RedHat'
   ansible.builtin.template:
-    src: redhat-nginx-site.j2
-    dest: "/etc/nginx/nginx.conf"
+    src: nginx-site.j2
+    dest: "/etc/nginx/conf.d/{{ wgui_server_name }}.conf"
   notify:
     - restart nginx
 
