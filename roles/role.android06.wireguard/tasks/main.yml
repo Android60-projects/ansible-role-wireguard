@@ -1,9 +1,6 @@
 ---
 - include_vars: "vars/{{ ansible_os_family }}.yml"
 
-- include_tasks: tasks/epel/{{ ansible_distribution }}.yml
-  when: ansible_os_family == 'RedHat'
-
 - import_tasks: tasks/routing/public-ip.yml
 
 - import_tasks: tasks/routing/routing-Debian.yml

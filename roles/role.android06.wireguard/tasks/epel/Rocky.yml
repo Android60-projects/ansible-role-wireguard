@@ -1,5 +1,0 @@
----
-- name: Install required packages
-  dnf:
-    name: 'epel-release'
-    state: present
