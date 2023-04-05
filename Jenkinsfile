@@ -17,8 +17,8 @@ pipeline {
                 stage('Test Ubuntu 20.04'){
                     agent { label 'molecule-virtualbox' }
                     steps {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            retry(5) {
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                            retry(2) {
                                 // retry code block
                                 script {
                                     sh "MOLECULE_DISTRO=geerlingguy/ubuntu2004 molecule test --parallel"
@@ -39,8 +39,8 @@ pipeline {
                 stage('Test Rocky Linux 8'){
                     agent { label 'molecule-virtualbox' }
                     steps {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            retry(5) {
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                            retry(2) {
                                 // retry code block
                                 script {
                                     sh "MOLECULE_DISTRO=geerlingguy/rockylinux8 molecule test --parallel"
@@ -65,8 +65,8 @@ pipeline {
                 stage('Test Debian 11'){
                     agent { label 'molecule-virtualbox' }
                     steps {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            retry(5) {
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                            retry(2) {
                                 // retry code block
                                 script {
                                     sh "MOLECULE_DISTRO=geerlingguy/debian11 molecule test --parallel"
@@ -87,8 +87,8 @@ pipeline {
                 stage('Test Ubuntu 18.04'){
                     agent { label 'molecule-virtualbox' }
                     steps {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            retry(5) {
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                            retry(2) {
                                 // retry code block
                                 script {
                                     sh "MOLECULE_DISTRO=geerlingguy/ubuntu1804 molecule test --parallel"
