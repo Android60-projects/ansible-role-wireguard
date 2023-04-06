@@ -18,7 +18,7 @@ pipeline {
                     agent { label 'molecule-virtualbox' }
                     steps {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                            retry(2) {
+                            retry(3) {
                                 // retry code block
                                 script {
                                     sh "MOLECULE_DISTRO=geerlingguy/ubuntu2004 molecule test --parallel"
@@ -40,7 +40,7 @@ pipeline {
                     agent { label 'molecule-virtualbox' }
                     steps {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                            retry(2) {
+                            retry(3) {
                                 // retry code block
                                 script {
                                     sh "MOLECULE_DISTRO=geerlingguy/rockylinux8 molecule test --parallel"
@@ -66,7 +66,7 @@ pipeline {
                     agent { label 'molecule-virtualbox' }
                     steps {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                            retry(2) {
+                            retry(3) {
                                 // retry code block
                                 script {
                                     sh "MOLECULE_DISTRO=geerlingguy/debian11 molecule test --parallel"
@@ -88,7 +88,7 @@ pipeline {
                     agent { label 'molecule-virtualbox' }
                     steps {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                            retry(2) {
+                            retry(3) {
                                 // retry code block
                                 script {
                                     sh "MOLECULE_DISTRO=geerlingguy/ubuntu1804 molecule test --parallel"
