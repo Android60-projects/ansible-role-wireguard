@@ -4,6 +4,13 @@ This directory contains playbooks used for installing and configuring Wireguard 
 
 [Ansible role by githubixx](https://github.com/githubixx/ansible-role-wireguard) was used as reference.
 
+Tags:
+```
+- wg-generate-keys
+- wg-config
+- wgui-install
+```
+
 General options
 ```
 wireguard_port: "51820"

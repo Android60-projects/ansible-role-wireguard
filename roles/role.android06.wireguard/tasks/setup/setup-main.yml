@@ -175,3 +175,5 @@
     state: "{{ wireguard_service_state }}"
     enabled: "{{ wireguard_service_enabled }}"
   when: (not ansible_os_family == 'Darwin') and (wgui_enabled == false)
+  tags:
+    - wg-config
