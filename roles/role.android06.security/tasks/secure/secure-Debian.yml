@@ -42,6 +42,7 @@
       - nano
       - sendmail
     state: absent
+    lock_timeout: "3600"
 
 # Automating updates for Debian systems.
 - name: Install unattended upgrades package.

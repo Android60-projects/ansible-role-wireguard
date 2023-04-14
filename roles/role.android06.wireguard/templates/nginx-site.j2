@@ -5,6 +5,12 @@ server {
     {% if wgui_server_name is defined %}
     server_name {{ wgui_server_name }};
     {% endif %}
+    {% if nginx_whitelist is defined %}
+    {% for ip in nginx_whitelist %}
+    allow {{ ip }};
+    {% endfor %}
+    deny   all;
+    {% endif %}
     proxy_buffering off;
     location / {
         proxy_pass http://127.0.0.1:5000/;

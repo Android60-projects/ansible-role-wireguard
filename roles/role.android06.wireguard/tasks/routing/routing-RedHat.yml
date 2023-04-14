@@ -45,6 +45,18 @@
     - {state: 'enabled', port: '22/tcp'}
     - {state: 'enabled', port: '{{ wireguard_port }}/udp'}
 
+- name: Open http port in {{ wireguard_interface }} interface.
+  when: nginx_whitelist is defined
+  firewalld:
+    state: "{{ item.state }}"
+    port: "{{ item.port }}"
+    zone: "internal"
+    immediate: true
+    permanent: true
+  with_items:
+    - {state: 'enabled', port: '80/tcp'}
+    - {state: 'enabled', port: '443/tcp'}
+
 - name: Enable masquerading on external zone
   ansible.posix.firewalld:
     masquerade: true
