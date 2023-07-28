@@ -1,0 +1,6 @@
+---
+openvpn_server_user: "nobody"
+openvpn_server_group: "nobody"
+ipsec_package_name: "ipsec"
+ipsec_config_location: "/etc/ipsec.conf"
+swanctl_config_location: "/etc/strongswan/swanctl/swanctl.conf"

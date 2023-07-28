@@ -1,0 +1,29 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Wireguard Web UI
+Documentation=https://github.com/ngoduykhanh/wireguard-ui
+After=network.target
+
+[Service]
+Environment=WGUI_USERNAME={{ wgui_admin_user }}
+Environment=WGUI_PASSWORD={{ wgui_admin_password }}
+Environment=WGUI_ENDPOINT_ADDRESS={{ public_ip }}
+Environment=WGUI_MTU={{ wgui_mtu }}
+{% if wireguard_postup is defined %}
+Environment="WGUI_SERVER_POST_UP_SCRIPT={% for wg_postup in wireguard_postup %}{{ wg_postup }};{% endfor %}"
+{% endif %}
+
+{% if wireguard_postdown is defined %}
+Environment="WGUI_SERVER_POST_DOWN_SCRIPT={% for wg_postdown in wireguard_postdown %}{{ wg_postdown }};{% endfor %}"
+{% endif %}
+
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+WorkingDirectory={{ wgui_path }}
+Type=simple
+User={{ wireguard_ui_user }}
+ExecStart={{ wgui_path }}/wireguard-ui
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

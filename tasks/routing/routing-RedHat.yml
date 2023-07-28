@@ -1,0 +1,69 @@
+---
+- sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+
+- sysctl:
+    name: net.ipv4.conf.all.send_redirects
+    value: '0'
+    sysctl_set: true
+
+- name: Set {{ wireguard_interface }} interface to internal
+  ansible.posix.firewalld:
+    interface: "{{ wireguard_interface }}"
+    zone: internal
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Set default interface to external
+  ansible.posix.firewalld:
+    interface: "{{ ansible_default_ipv4.interface }}"
+    zone: "{{ firewalld_default_interface_zone }}"
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Disable AllowZoneDrifting in firewalld config
+  lineinfile:
+    dest: /etc/firewalld/firewalld.conf
+    regexp: '^AllowZoneDrifting'
+    line: 'AllowZoneDrifting=no'
+    state: present
+
+- name: Configure open ports with firewalld.
+  notify:
+    - restart firewalld
+  firewalld:
+    state: "{{ item.state }}"
+    port: "{{ item.port }}"
+    zone: "{{ firewalld_default_interface_zone }}"
+    immediate: true
+    permanent: true
+  with_items:
+    - {state: 'enabled', port: '22/tcp'}
+    - {state: 'enabled', port: '{{ wireguard_port }}/udp'}
+
+- name: Open http port in {{ wireguard_interface }} interface.
+  when: nginx_whitelist is defined
+  firewalld:
+    state: "{{ item.state }}"
+    port: "{{ item.port }}"
+    zone: "internal"
+    immediate: true
+    permanent: true
+  with_items:
+    - {state: 'enabled', port: '80/tcp'}
+    - {state: 'enabled', port: '443/tcp'}
+
+- name: Enable masquerading on external zone
+  ansible.posix.firewalld:
+    masquerade: true
+    zone: "{{ firewalld_default_interface_zone }}"
+    permanent: true
+    state: enabled
+    # Workaround ansible issue: https://github.com/ansible/ansible/pull/21693
+    # immediate: true
+  notify:
+    - restart firewalld

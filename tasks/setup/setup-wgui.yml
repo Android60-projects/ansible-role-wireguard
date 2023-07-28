@@ -1,0 +1,159 @@
+---
+# Execute only when wgui_enabled is true
+- name: Does Wireguard UI already downloaded?
+  stat:
+    path: "{{ wgui_path }}/wireguard-ui"
+  register: register_wgui_installed
+  tags:
+    - wgui-install
+
+- name: Ensure nginx is installed
+  package:
+    name: nginx
+    state: present
+  tags:
+    - wgui-install
+
+- name: Open ports for nginx (Debian)
+  when: ansible_os_family == 'Debian'
+  ufw:
+    rule: allow
+    direction: in
+    proto: "{{ item.proto }}"
+    port: "{{ item.port }}"
+    comment: Created by Ansible
+    state: enabled
+    delete: false
+  with_items:
+    - {port: '80', proto: 'tcp'}
+    - {port: '443', proto: 'tcp'}
+  notify: reload ufw
+  tags:
+    - wgui-install
+
+- name: Open ports for nginx (RHEL)
+  when: ansible_os_family == 'RedHat'
+  notify:
+    - restart firewalld
+  firewalld:
+    state: "{{ item.state }}"
+    port: "{{ item.port }}"
+    zone: "{{ firewalld_default_interface_zone }}"
+    immediate: true
+    permanent: true
+  with_items:
+    - {state: 'enabled', port: '80/tcp'}
+    - {state: 'enabled', port: '443/tcp'}
+  tags:
+    - wgui-install
+
+# Wireguard UI user account configuration.
+- name: Add a wireguard-ui user.
+  user:
+    name: "{{ wireguard_ui_user }}"
+    state: present
+  tags:
+    - wgui-install
+
+- name: ensure Wireguard UI directory exists
+  when: not register_wgui_installed.stat.exists
+  file:
+    path: "{{ wgui_path }}"
+    state: directory
+    owner: "{{ wireguard_ui_user }}"
+    group: "{{ wireguard_ui_user }}"
+  tags:
+    - wgui-install
+
+- name: Ensure Wireguard configuration directory is owned by Wireguard UI user
+  file:
+    path: "{{ wireguard_remote_directory }}"
+    state: directory
+    recurse: true
+    owner: "{{ wireguard_ui_user }}"
+    group: "{{ wireguard_ui_user }}"
+  tags:
+    - wgui-install
+
+- name: Unarchive Wireguard UI to {{ wgui_path }}
+  when: not register_wgui_installed.stat.exists
+  ansible.builtin.unarchive:
+    src: "https://github.com/ngoduykhanh/wireguard-ui/releases/download/v0.4.0/wireguard-ui-v0.4.0-linux-amd64.tar.gz"
+    dest: "{{ wgui_path }}"
+    remote_src: true
+  tags:
+    - wgui-install
+
+- name: Place Wireguard UI systemd unit
+  ansible.builtin.template:
+    src: wgui.service.j2
+    dest: "/lib/systemd/system/wgui.service"
+    owner: root
+    group: root
+    mode: "0640"
+  notify:
+    - restart wgui
+  tags:
+    - wgui-install
+
+- name: Ensure nginx can connect to the network.
+  seboolean:
+    name: httpd_can_network_connect
+    state: true
+    persistent: true
+  when: ansible_selinux.status == 'enabled'
+  tags:
+    - wgui-install
+
+- name: delete default nginx site
+  when: ansible_os_family == 'Debian'
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+  tags:
+    - wgui-install
+
+- name: Place nginx site config (Debian)
+  when: ansible_os_family == 'Debian'
+  ansible.builtin.template:
+    src: nginx-site.j2
+    dest: "/etc/nginx/sites-enabled/{{ wgui_server_name }}"
+  notify:
+    - restart nginx
+  tags:
+    - wgui-install
+
+- name: Place nginx site config (RedHat)
+  when: ansible_os_family == 'RedHat'
+  ansible.builtin.template:
+    src: nginx-site.j2
+    dest: "/etc/nginx/conf.d/{{ wgui_server_name }}.conf"
+  notify:
+    - restart nginx
+  tags:
+    - wgui-install
+
+- name: Install system unit for automatic wireguard restart
+  ansible.builtin.template:
+    src: wgui-restart.service.j2
+    dest: "/lib/systemd/system/wgui-restart.service"
+    owner: root
+    group: root
+    mode: "0640"
+  notify:
+    - restart wgui-restart.service
+  tags:
+    - wgui-install
+
+- name: Install system unit for handling config changes
+  ansible.builtin.template:
+    src: wgui-restart.path.j2
+    dest: "/lib/systemd/system/wgui-restart.path"
+    owner: root
+    group: root
+    mode: "0640"
+  notify:
+    - restart wgui-restart.path
+  tags:
+    - wgui-install

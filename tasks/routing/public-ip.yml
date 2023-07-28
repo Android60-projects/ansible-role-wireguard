@@ -1,0 +1,25 @@
+---
+- name: Check if running on AWS instance
+  uri:
+    url: http://169.254.169.254/latest/meta-data
+    timeout: 2
+  register: aws_uri_check
+  failed_when: false
+
+- name: Set AWS check fact
+  set_fact:
+    is_aws: "{{ aws_uri_check.status == 200 }}"
+
+- name: Get instance metadata facts
+  when: is_aws
+  ec2_metadata_facts:
+
+- name: Set public_ip (EC2)
+  when: is_aws
+  set_fact:
+    public_ip: '{{ ansible_ec2_public_ipv4 }}'
+
+- name: Set public_ip (Non EC2)
+  when: (public_ip is not defined)
+  set_fact:
+    public_ip: '{{ ansible_default_ipv4.address }}'
