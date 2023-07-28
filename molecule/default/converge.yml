@@ -11,4 +11,4 @@
 
   roles:
     - role: android06.security
-    - role: wireguard-ansible
+    - role: android06.wireguard
