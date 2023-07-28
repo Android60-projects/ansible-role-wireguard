@@ -2,7 +2,7 @@
 dependencies: []
 
 galaxy_info:
-  role_name: openvpn
+  role_name: wireguard
   author: android06
   description: "This role installs Wireguard VPN server"
   company: "Android06"
