@@ -12,6 +12,16 @@ pipeline {
     }
 
     stages {
+        stage('Prepare') {
+            agent { label 'molecule-virtualbox' }
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'git-ansible-roles-group-read', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh 'ansible-galaxy install git+https://$GIT_USER:$GIT_PASS@gitlab.myhomelab.xyz/Android06/security-ansible.git,main,android06.security --force'
+                    }
+                }
+            }
+        }
         stage('Test I') {
             parallel {
                 stage('Test Ubuntu 20.04'){
