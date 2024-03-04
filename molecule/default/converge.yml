@@ -2,7 +2,7 @@
 - name: Converge
   hosts: all
 
-  tasks:
+  pre_tasks:
     - name: Update apt cache (on Debian).
       apt:
         update_cache: true
