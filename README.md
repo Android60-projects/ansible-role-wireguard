@@ -1,5 +1,7 @@
 # Wireguard Ansible
 
+[![Molecule test](https://github.com/Android60-projects/ansible-role-wireguard/actions/workflows/molecule.yml/badge.svg?branch=main)](https://github.com/Android60-projects/ansible-role-wireguard/actions/workflows/molecule.yml)
+
 This directory contains playbooks used for installing and configuring Wireguard VPN server.
 
 [Ansible role by githubixx](https://github.com/githubixx/ansible-role-wireguard) was used as reference.
