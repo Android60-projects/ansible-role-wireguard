@@ -1,0 +1,4 @@
+---
+roles:
+  - name: android06.security
+    src: git+https://github.com/Android60-projects/ansible-role-security
