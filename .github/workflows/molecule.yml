@@ -1,0 +1,39 @@
+name: Molecule test
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '00 3 * * *'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  Test-Ubuntu-2004:
+    # The type of runner that the job will run on
+    runs-on: [self-hosted, virtualbox, molecule]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add ~/.local/bin to GITHUB_PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Install requirements
+        run: ansible-galaxy install -r requirements.yaml --force
+      - name: Run molecule test
+        run: MOLECULE_DISTRO=geerlingguy/ubuntu2004 molecule test --parallel
+  Test-Rocky-Linux-8:
+    # The type of runner that the job will run on
+    runs-on: [self-hosted, virtualbox, molecule]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add ~/.local/bin to GITHUB_PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Install requirements
+        run: ansible-galaxy install -r requirements.yaml --force
+      - name: Run molecule test
+        run: MOLECULE_DISTRO=geerlingguy/rockylinux8 molecule test --parallel
